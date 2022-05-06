@@ -1,0 +1,178 @@
+---
+title: "FinalProject"
+author: "Yuehting Wu & Peiwen Su"
+date: "5/5/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(ggthemes)
+opts_chunk$set(echo = TRUE)
+```
+
+# Description of dataset
+
+This is a secondary analysis of an existing dataset using data obtained from [Kaggle, Cardiovascular Disease dataset] (https://www.kaggle.com/datasets/sulianova/cardiovascular-disease-dataset). The dataset contains 70000 records and 13 features which were collected at the moment of medical examination, such as systolic blood pressure, diastolic blood pressure, and having cardiovascular disease or not. 
+
+# Import the dataset
+```{r}
+# ENTER YOUR CODE HERE
+cardiodisease <- read_csv("data/cardio.csv",
+                          col_names = TRUE,
+                  col_types = "iifiiiiffllll")
+summary(cardiodisease)
+```
+
+# Data preprocessing
+
+First, drop missing value in the dataset. The columns of ap_hi and ap_lo stand for systolic and diastolic blood pressure which are impossible in the negative. So, filtering the dataset by the highest blood pressure in the world (https://pubmed.ncbi.nlm.nih.gov/7741618/) and people who have hypotension. And based on the blood pressure measurement, differentiate ap_hi and ap_lo into 5 categories in categorical type. Convert the age in days into the age in years and then change the data type from float to integer. Create a new feature called BMI, calculate the body mess index of each record. Based on the BMI, creating a new feature called BMI_level to distinguish BMI into 4 categories: underweight, normal, overweight, and obese and the BMI_level feature is in categorical type. 
+
+```{r}
+# Drop missing value in the dataset
+cardiodisease <- drop_na(cardiodisease)
+
+# Filtering out impossible records
+cardio_cleaning <- cardiodisease %>%
+  filter(ap_hi <=370,ap_lo <=360,ap_lo >= 60, ap_lo <=360)
+
+# distinguish systolic and diastolic into 5 categories: normal, prehypertension, 
+# stage 1, stage 2, and hypertension crisis
+cardio_cleaning <- cardio_cleaning %>%
+  mutate(blood_pressure = 1)
+for (i in 1:length(cardio_cleaning$ap_hi)) {
+  if(cardio_cleaning$ap_hi[i] >= 180 && cardio_cleaning$ap_lo[i] >= 120 ){
+    cardio_cleaning$blood_pressure[i] <- "hypertension_crisis"
+  } else if (cardio_cleaning$ap_hi[i]>= 140 || cardio_cleaning$ap_lo[i] >= 90) {
+    cardio_cleaning$blood_pressure[i] <- "stage_2"
+  } else if (cardio_cleaning$ap_hi[i]>= 130 || cardio_cleaning$ap_lo[i] >= 80) {
+    cardio_cleaning$blood_pressure[i] <- "stage_1"
+  } else if (cardio_cleaning$ap_hi[i] >= 120 && cardio_cleaning$ap_lo[i]<80){
+    cardio_cleaning$blood_pressure[i] <- "hypertension"
+  } else {
+    cardio_cleaning$blood_pressure[i] <- "normal"
+  }
+}
+cardio_cleaning$blood_pressure <- as.factor(cardio_cleaning$blood_pressure)
+
+
+# Change data type
+cardio_cleaning$age <- cardio_cleaning$age / 365
+cardio_cleaning$age <- as.integer(cardio_cleaning$age)
+
+# Create a new feature called BMI
+cardio_cleaning <- cardio_cleaning %>%
+  mutate(BMI = weight / ((height/100) * (height/100)))
+
+# Create a new feature called BMI_level
+cardio_cleaning <- cardio_cleaning %>%
+  mutate(BMI_level = "normal")
+for (i in 1: length(cardio_cleaning$BMI)){
+  if(cardio_cleaning$BMI[i] < 18.5){
+    cardio_cleaning$BMI_level[i] <- "underweight"
+  } else if (cardio_cleaning$BMI[i] <= 24.9 && cardio_cleaning$BMI[i] >=18.5){
+    cardio_cleaning$BMI_level[i]<- "normal"
+  } else if (cardio_cleaning$BMI[i] <= 29.9 && cardio_cleaning$BMI[i] >= 25){
+    cardio_cleaning$BMI_level[i] <- "overweight"
+  } else{
+    cardio_cleaning$BMI_level[i] <- "obese"
+  }
+}
+
+cardio_cleaning$BMI_level <- as.factor(cardio_cleaning$BMI_level)
+
+
+
+# The dataset we used for analyzing
+cardio <- cardio_cleaning %>%
+  select(-height, -weight, -ap_hi,-ap_lo,-id)
+
+summary(cardio)
+```
+
+
+# First Visualization
+
+There are 21 numeric variables per observation in the data. Each observation is classified in one of 9 categories: Breakfast, Beef & Pork, Chicken & Fish, Salads, Snacks & Sides, Desserts, Beverages, Coffee & Tea, Smoothies & Shakes.
+
+Run a dimensionality reduction algorithm on the data, and visualize the new dimensions with `category` as the categorical variable. Based on your visualization, try to explain how these categories are grouped together. How are they similar or different?
+
+```{r}
+# Barplot
+bloodpressure_cardio <- cardio %>%
+  group_by(cardio, blood_pressure) %>%
+  summarize(count = n())
+print(bloodpressure_cardio)
+
+
+
+bloodpressure_cardio %>%
+  ggplot(aes(x= blood_pressure,
+             y = reorder(count,blood_pressure),
+             fill = cardio))+
+  geom_col(position = "dodge")+
+  scale_fill_colorblind()+
+  labs(title = "Distrubution of level of blood pressure with cardio disease",
+       caption = "Dataset from Kaggle",
+       x = "Level of blood_pressure",
+       y = "count")+
+  theme_linedraw()
+
+```
+
+
+
+Interpretation of the visualization
+
+This barplot shows the distributions of levels of blood pressure people whether who have the cardiovascular disease or not. For hypertension, people don't have the disease more than having the disease. For hypertension crisis, it is hard to observe because the proportion of hypertension crisis is 0.18% (127/68651). For stage s hypertension, people having the disease are more than people not having the disease.
+
+
+# Second Visualization
+
+```{r}
+# Pie Chart
+library(webr)
+piechart <- cardio %>%
+  group_by(cardio,BMI_level) %>%
+  summarize(count = n())
+
+piechart$cardio <- as.factor(piechart$cardio)
+print(piechart)
+
+PieDonut(piechart, 
+         aes(cardio, BMI_level, count = count),
+         title = "Cardio disease: mobidity by level of BMI",
+         titlesize = 5,
+         explode=1,
+         explodePie=FALSE,
+         explodeDonut=TRUE,
+         labelposition=0,
+         r0 = 0.45,
+         r1=0.9
+         )
+  
+
+```
+
+
+Interpretation of the visualization
+
+The piechart shows that people who have a normal level of BMI are more likely not to have the disease. Also, this piechart clearly shows the actual percentage of each category and the relationships between cardio disease and levels of BMI.
+
+
+# Third Visualization
+
+```{r}
+cardio %>%
+  ggplot(aes(x = age,
+             fill = blood_pressure))+
+  geom_density(alpha = .5,
+                 position = "identity",
+                 binwidth = 5)+
+  facet_wrap(~cardio)+
+  theme_linedraw()
+
+```
+
+Interpretation of the visualization
