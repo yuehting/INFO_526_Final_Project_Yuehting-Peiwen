@@ -9,8 +9,7 @@ output: html_document
 library(knitr)
 library(tidyverse)
 library(ggthemes)
-library(webr)
-opts_chunk$set(echo = TRUE)
+opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 # Description of dataset
@@ -95,10 +94,6 @@ summary(cardio)
 
 # First Visualization
 
-There are 21 numeric variables per observation in the data. Each observation is classified in one of 9 categories: Breakfast, Beef & Pork, Chicken & Fish, Salads, Snacks & Sides, Desserts, Beverages, Coffee & Tea, Smoothies & Shakes.
-
-Run a dimensionality reduction algorithm on the data, and visualize the new dimensions with `category` as the categorical variable. Based on your visualization, try to explain how these categories are grouped together. How are they similar or different?
-
 ```{r}
 # Barplot
 bloodpressure_cardio <- cardio %>%
@@ -123,6 +118,9 @@ bloodpressure_cardio %>%
 ```
 
 
+
+Interpretation of the visualization
+
 This barplot shows the distributions of levels of blood pressure people whether who have the cardiovascular disease or not. For hypertension, people don't have the disease more than having the disease. For hypertension crisis, people in this category are in the fewer proportion of the dataset. Most people in the hypertension crisis category have cardiovascular disease. Of the people with stage 2 hypertension, 78% (18295/23477) people have the disease. Of people in the normal group, 78% don't have the disease. 
 
 
@@ -130,7 +128,7 @@ This barplot shows the distributions of levels of blood pressure people whether 
 
 ```{r}
 # Pie Chart
-
+library(webr)
 piechart <- cardio %>%
   group_by(cardio,BMI_level) %>%
   summarize(count = n())
@@ -142,10 +140,6 @@ PieDonut(piechart,
          aes(cardio, BMI_level, count = count),
          title = "Cardio disease: mobidity by level of BMI",
          titlesize = 5,
-         explode=1,
-         explodePie=FALSE,
-         explodeDonut=TRUE,
-         labelposition=0,
          r0 = 0.45,
          r1=0.9
          )
@@ -153,6 +147,8 @@ PieDonut(piechart,
 
 ```
 
+
+Interpretation of the visualization
 
 The piechart shows that people who have a normal level of BMI are more likely not to have the disease. Also, this piechart clearly shows the actual percentage of each category and the relationships between cardio disease and levels of BMI.
 
@@ -169,5 +165,7 @@ cardio %>%
   theme_linedraw()
 
 ```
+
+Interpretation of the visualization
 
 Based on the visualization, people who have cardiovascular disease across all the levels of blood pressure are distributed in the range of age from the 50s to 60s. People don't have the disease, the group of hypertension crisis distributed in older ages compared to other groups. 
