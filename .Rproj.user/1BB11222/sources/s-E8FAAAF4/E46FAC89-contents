@@ -1,0 +1,176 @@
+
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+library(scales)
+library(shiny)
+library(tidyverse)
+library(usmap)
+library(ggrepel)
+
+setwd("~/526 data visualization critiques")
+
+gunviolence <- read_csv("gun-violence-data_01-2013_03-2018.csv")
+
+
+gunviolence <- gunviolence %>%
+  mutate(year = "")
+for (i in 1:length(gunviolence$date)) {
+  if(gunviolence$date[i] <= '2013-12-31'){
+    gunviolence$year[i] <- 2013
+  } else if (gunviolence$date[i] <= '2014-12-31'){
+    gunviolence$year[i] <- 2014
+  } else if (gunviolence$date[i] <= '2015-12-31'){
+    gunviolence$year[i] <- 2015
+  } else if (gunviolence$date[i] <= '2016-12-31'){
+    gunviolence$year[i] <- 2016
+  } else if (gunviolence$date[i] <= '2017-12-31'){
+    gunviolence$year[i] <- 2017
+  }
+  else{
+    gunviolence$year[i] <- 2018
+  }
+}
+summary(gunviolence)
+
+
+
+state_death <- gunviolence %>%
+  group_by(city_or_county)%>%
+  summarize(death = sum(n_killed,na.rm = TRUE)) %>%
+  arrange(desc(death)) %>%
+  ggplot(aes(x = death,
+             y = state))+
+  geom_col()
+
+
+
+  
+
+# orginial visualization:
+# it shows the top 20 of deaths of each state
+gun_death <- gunviolence %>%
+  group_by(state)%>%
+  summarize(death = sum(n_killed,na.rm = TRUE))%>%
+  arrange(desc(death))
+  
+
+
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+  
+  # Application title
+  titlePanel("Gun Violence Dashboard"),
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+      h3("Data on Gun Violence from 2013 to 2018"),
+      p("The data displayed here was retrieved from:"),
+      HTML('<a href="https://www.kaggle.com/code/pmotta/states-with-more-death-of-u-s-a-2013-2018/data">Kaggle</a>'),
+      p("Navigate through the different visualizations using the tabs.")
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+      tabsetPanel(
+        tabPanel("BarPlotofUSA", 
+                 sliderInput("bars",
+                             "Number of bars:",
+                             min = 1,
+                             max = 51,
+                             value = 20),
+                 plotOutput("barPlot")),
+        tabPanel("BarPlotofStates",
+                 selectInput("state",
+                             "Select state:",
+                             choices = gunviolence %>%  distinct(state) %>% pull(state)
+                 ),
+                 sliderInput("bars_city",
+                             "Number of bars",
+                             min = 1,
+                             max = 30,
+                             value = 10),
+                 plotOutput("barPlot2")),
+        tabPanel("Map",
+                 sliderInput("Year",
+                             "Select year:",
+                             min = 2013,
+                             max = 2018, 
+                             value = 2015,
+                             sep =""),
+                 plotOutput("mapPlot"))
+      )
+      
+    )
+  )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+  
+  output$barPlot <- renderPlot({
+    # generate bins based on input$bins from ui.R
+    gun_death %>%
+      arrange(desc(death))%>%
+      head(input$bars) %>%
+      ggplot(aes(y = reorder(state,death),
+                 x = death))+
+      geom_col(alpha = .7)+
+      geom_text(aes(label = death),
+                hjust = +1)+
+      scale_x_continuous(limits = c(0,6000),
+                         breaks = seq(0, 6000, by = 500))+
+      theme_linedraw()+
+      labs(title = "Deaths of states",
+           y = "state")
+    
+  })
+  output$barPlot2 <- renderPlot({
+    gunviolence %>%
+      filter(state == input$state) %>%
+      group_by(city_or_county)%>%
+      summarize(death = sum(n_killed,na.rm = TRUE)) %>%
+      arrange(desc(death))%>%
+      head(input$bars_city) %>%
+      ggplot(aes(y = reorder(city_or_county,death),
+                 x = death)) +
+      geom_col(fill = "#D55E00")+
+      scale_x_continuous(limits = c(0,1300))+
+      theme_linedraw()+
+      labs(title = paste("Top ",input$bars_city,"Death Cities or Counties in",
+                         input$state),
+           y = "City of county")
+    
+    
+  })
+  output$mapPlot <- renderPlot({
+    gunviolence %>%
+      filter(year == input$Year) %>%
+      group_by(state)%>%
+      summarize(death = sum(n_killed, na.rm = TRUE)) %>%
+      plot_usmap(data = .,
+                 values = "death",
+                 labels = TRUE)+
+      theme(legend.position = "right") +
+      scale_fill_continuous(name = "Deaths",
+                            low = "cornsilk",
+                            high = "salmon4") +
+      labs( title = paste("Deaths caused by gun violence in",
+                          input$Year)
+      )
+  }
+  
+  )
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+
+
+

@@ -95,10 +95,6 @@ summary(cardio)
 
 # First Visualization
 
-There are 21 numeric variables per observation in the data. Each observation is classified in one of 9 categories: Breakfast, Beef & Pork, Chicken & Fish, Salads, Snacks & Sides, Desserts, Beverages, Coffee & Tea, Smoothies & Shakes.
-
-Run a dimensionality reduction algorithm on the data, and visualize the new dimensions with `category` as the categorical variable. Based on your visualization, try to explain how these categories are grouped together. How are they similar or different?
-
 ```{r}
 # Barplot
 bloodpressure_cardio <- cardio %>%
@@ -130,7 +126,6 @@ This barplot shows the distributions of levels of blood pressure people whether 
 
 ```{r}
 # Pie Chart
-
 piechart <- cardio %>%
   group_by(cardio,BMI_level) %>%
   summarize(count = n())
@@ -142,17 +137,12 @@ PieDonut(piechart,
          aes(cardio, BMI_level, count = count),
          title = "Cardio disease: mobidity by level of BMI",
          titlesize = 5,
-         explode=1,
-         explodePie=FALSE,
-         explodeDonut=TRUE,
-         labelposition=0,
          r0 = 0.45,
          r1=0.9
          )
   
 
 ```
-
 
 The piechart shows that people who have a normal level of BMI are more likely not to have the disease. Also, this piechart clearly shows the actual percentage of each category and the relationships between cardio disease and levels of BMI.
 
