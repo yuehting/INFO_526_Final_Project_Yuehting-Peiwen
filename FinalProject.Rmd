@@ -1,5 +1,5 @@
 ---
-title: "FinalProject"
+title: "INFO526_FinalProject"
 author: "Yuehting Wu & Peiwen Su"
 date: "5/5/2022"
 output: html_document
@@ -9,6 +9,7 @@ output: html_document
 library(knitr)
 library(tidyverse)
 library(ggthemes)
+
 opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
