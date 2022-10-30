@@ -7,8 +7,8 @@ You will need to set up an appropriate coding environment:
 
 * [Python (version 3.7 or higher](https://www.python.org/downloads/)
 * [PyTorch](https://pytorch.org)
-
-``` pip install git+https://github.com/openai/whisper.git
+```
+pip install git+https://github.com/openai/whisper.git
 ```
 * 
 * [git](https://git-scm.com/downloads)
