@@ -33,7 +33,7 @@ scoop install ffmpeg
 pip install setuptools-rust
 ```
 ## Models and languages
-Whisper provides five model sizes, we use ```base``` model here which is a multilingual model and has 71,825,920 parameters. If you want to implement different sizes of models and consider the approximate memory requirements and relative speed, please go to ```Available models and languages``` section here(https://github.com/openai/whisper#readme).
+Whisper provides five model sizes, we use ```base``` model here which is a multilingual model and has 71,825,920 parameters. If you want to implement different sizes of models and consider the approximate memory requirements and relative speed, please go to ```Available models and languages``` section [here](https://github.com/openai/whisper#readme).
 
 
 
