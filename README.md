@@ -5,7 +5,7 @@ Python code for implementing the [Whisper model](https://github.com/openai/whisp
 ## Setup 
 You will need to set up an appropriate coding environment:
 
-* [Python (version 3.7 or higher](https://www.python.org/downloads/)
+* [Python (version 3.7 or higher)](https://www.python.org/downloads/)
 * [PyTorch](https://pytorch.org)
 * The following command will pull and install the latest commit from openai/whipser repository.
 ```
@@ -29,4 +29,16 @@ choco install ffmpeg
 scoop install ffmpeg
 
 ```
-* 
+* You may need ```rust``` installed as well, in case [tokenizers](https://pypi.org/project/tokenizers/) does not provide a pre-built wheel for your platform. 
+```
+pip install setuptools-rust
+```
+
+
+
+
+
+
+
+
+
