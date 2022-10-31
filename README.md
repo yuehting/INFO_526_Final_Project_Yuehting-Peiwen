@@ -41,10 +41,31 @@ In this project, we use this Whisper model to transcribe and translate English a
 To transcribe and translate the audio, we will use the following function to get the result. 
 
 * For the full interview:
+
+From [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py):
+
+* The load_audio() method reads the audio file and returns a NumPy array containing the audio waveform, in float32 dtype. 
 ```
-from [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py)
+[-0.00018311 -0.00024414 -0.00030518 ... -0.00146484 -0.00195312
+ -0.00210571]
+```
 
+* The pad_or_trim() method pads or trims the audio array to N_SAMPLES () to fit 30 seconds.
+```
+SAMPLE_RATE = 16000
+CHUNK_LENGTH = 30 
+N_SAMPLES = CHUNK_LENGTH * SAMPLE_RATE # 480000: number of samples in a chunk
+```
 
+* The log_mel_spectrogram() method computes the log-Mel spectrogram of a NumPy array containing the audio waveform, and retune a Tensor that contains the Mel spectrogram and the shape of the Tensor will be (80, 3000). 
+```
+tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
+        [-0.5296, -0.5296, -0.5296,  ...,  0.0443,  0.1246, -0.1071],
+        [-0.5296, -0.5296, -0.5296,  ...,  0.2268,  0.0590, -0.2129],
+        ...,
+        [-0.5296, -0.5296, -0.5296,  ..., -0.5296, -0.5296, -0.5296],
+        [-0.5296, -0.5296, -0.5296,  ..., -0.5296, -0.5296, -0.5296],
+        [-0.5296, -0.5296, -0.5296,  ..., -0.5296, -0.5296, -0.5296]])
 
 ```
 
@@ -52,7 +73,7 @@ from [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py)
 ```
 
 ```
-** Before running the script for th short audio, making sure the turn-length ``` is longer than 0. ```
+** Before running the script for the short audio, make sure the length of the turn ``` is longer than 0. ```
 
 
 
