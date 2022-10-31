@@ -67,6 +67,23 @@ tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
 
 ```
 
+From [decoding.py](https://github.com/openai/whisper/blob/main/whisper/decoding.py):
+
+* The ```detect_language()``` method detect language of the log-Mel spectrogram and returns a Tensor (_) and the probability distribution (probs) which contains the languages and the probability of each language will be. 
+
+```
+_, probs = model.detect_language(m)
+print(f"Detected language: {max(probs, key = probs.get)}")
+
+#probs:
+{'en': 0.9958220720291138, 'zh': 7.025230297585949e-05, 'de': 0.00015919747238513082, 'es': 0.0003416460531298071, 'ru': 0.00030879987752996385, 'ko': 0.00028310518246144056, 'fr': 0.00021966002532280982,...}
+
+```
+
+
+
+
+
 
 
 
