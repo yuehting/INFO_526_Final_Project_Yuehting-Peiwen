@@ -35,13 +35,24 @@ pip install setuptools-rust
 ## Models and languages
 Whisper provides five model sizes, we use the ```base``` model here which is a multilingual model and has 71,825,920 parameters. If you want to implement different sizes of models and consider the approximate memory requirements and relative speed, please go to the ```Available models and languages``` section [here](https://github.com/openai/whisper#readme).
 
-In this project, we use this Whisper model to transcribe and transalte English and Spanish audio. It also can transcribe and translate other kinds of languages. All available languages are listed in the [tokenizer.py](https://github.com/openai/whisper/blob/main/whisper/tokenizer.py)
+In this project, we use this Whisper model to transcribe and translate English and Spanish audio. It also can transcribe and translate other kinds of languages. All available languages are listed in the [tokenizer.py](https://github.com/openai/whisper/blob/main/whisper/tokenizer.py)
+
+## Python usage
+To transcribe and translate the audio, we will use the following function to get the result. 
+
+* For the full interview:
+```
+from [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py)
+
+
+
+```
 
 
 
 
 
-
+**
 
 
 
