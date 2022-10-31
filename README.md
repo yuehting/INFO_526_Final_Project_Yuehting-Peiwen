@@ -40,7 +40,7 @@ In this project, we use this Whisper model to transcribe and translate English a
 ## Python usage
 To transcribe and translate the audio, we will use the following function to get the result. 
 
-* For the full interview:
+### For the full interview:
 
 From [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py):
 
