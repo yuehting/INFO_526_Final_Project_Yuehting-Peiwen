@@ -48,11 +48,11 @@ from [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py)
 
 ```
 
+* For the short audio split based on its turn-length:
+```
 
-
-
-
-**
+```
+** Before running the script for th short audio, making sure the turn-length ``` is longer than 0. ```
 
 
 
