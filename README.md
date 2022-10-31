@@ -68,8 +68,6 @@ tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
 ```
 
 
-** To transcribe and translate the audio audio which split bases on its length of turn. Make sure the length of each turn ```is longer than 0``` Before running the script for the short audio.
-
-
+** To transcribe and translate the audio audio which is split based on the length of the turn. Make sure the length of each turn ```is longer than 0``` Before running the script for the short audio.
 
 
