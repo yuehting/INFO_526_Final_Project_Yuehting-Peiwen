@@ -84,7 +84,7 @@ From [transcribe.py](https://github.com/openai/whisper/blob/main/whisper/transcr
 
 * The ```transcribe()``` method transcribes the audio file and returns a dictionary containing th resulting ```text ("text")``` and ```segment-level detials ("segment")```, and the spoken language or the language you want to translate ("language"'). Th parameters we put in this method will be the audio file, language, and fp16=False/True. In ```"segment"```, it shows that each segment's start and end. With this information, we then can get the time of each audio file transcribe (or translate) takes. 
 
-** When the model is running on ```CPU``` and you set ```fp16=True```, you will got the warning message ```FP16 is not supported on CPU; using FP32 instead```. Then you should set the ```fp16=False``` to solve the warning. 
+** When the model is running on ```CPU``` and you set ```fp16=True```, you will got the warning message "FP16 is not supported on CPU; using FP32 instead". Then you should set the ```fp16=False``` to solve the warning. 
 
 ```
 model.transcribe(audio file, language="english", fp16=False)
