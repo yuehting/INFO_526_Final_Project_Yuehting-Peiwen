@@ -57,7 +57,7 @@ CHUNK_LENGTH = 30
 N_SAMPLES = CHUNK_LENGTH * SAMPLE_RATE # 480000: number of samples in a chunk
 ```
 
-* The ```log_mel_spectrogram()``` method computes the log-Mel spectrogram of a NumPy array containing the audio waveform, and retune a Tensor that contains the Mel spectrogram and the shape of the Tensor will be (80, 3000). 
+* The ```log_mel_spectrogram()``` method computes the log-Mel spectrogram of a NumPy array containing the audio waveform and retunes a Tensor that contains the Mel spectrogram and the shape of the Tensor will be (80, 3000). 
 ```
 tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
         [-0.5296, -0.5296, -0.5296,  ...,  0.0443,  0.1246, -0.1071],
