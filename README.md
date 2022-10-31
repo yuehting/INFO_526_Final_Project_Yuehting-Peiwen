@@ -69,10 +69,10 @@ tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
 
 From [decoding.py](https://github.com/openai/whisper/blob/main/whisper/decoding.py):
 
-* The ```detect_language()``` method detect language of the log-Mel spectrogram and returns a Tensor (_) and the probability distribution (probs) which contains the languages and the probability of each language will be. 
+* The ```detect_language()``` method detects the language of the log-Mel spectrogram and returns a Tensor (_) and the probability distribution (probs) which contains the languages and the probability of each language will be. 
 
 ```
-_, probs = model.detect_language(m)
+_, probs = model.detect_language()
 print(f"Detected language: {max(probs, key = probs.get)}")
 
 #probs:
@@ -80,12 +80,19 @@ print(f"Detected language: {max(probs, key = probs.get)}")
 
 ```
 
+From [transcribe.py](https://github.com/openai/whisper/blob/main/whisper/transcribe.py):
 
+* The ```transcribe()``` method transcribes the audio file and returns a dictionary containing th resulting text ("text") and segment-level detials ("segment"), and the spoken language or the language you want to translate ("language"'). Th parameters we put in this method will be the audio file, language, and fp16=False/True. In "segment", it shows that each segment's start and end. With this information, we then can get the time of each audio file transcribe (or translate) takes. 
 
+** When the model is running on ```CPU``` and you set ```fp16=True```, you will got the warning message ```FP16 is not supported on CPU; using FP32 instead```. Then you should set the ```fp16=False``` to solve the warning. 
 
+```
+model.transcribe(audio file, language="english", fp16=False)
 
+# result:
+{```'text'```: " It's now a good time for a call. I'm sorry it's really late. I think my calls have been going past what they should be.",``` 'segments'```: [{'id': 0, 'seek': 0, 'start': 0.0, 'end': 2.88, 'text': " It's now a good time for a call. I'm sorry it's really late.", 'tokens': [50364, 467, 311, 586, 257, 665, 565, 337, 257, 818, 13, 286, 478, 2597, 309, 311, 534, 3469, 13, 50508, 50508, 876, 452, 5498, 362, 668, 516, 1791, 437, 436, 820, 312, 13, 50680], 'temperature': 0.0, 'avg_logprob': -0.28695746830531527, 'compression_ratio': 1.163265306122449, 'no_speech_prob': 0.020430153235793114}, {'id': 1, 'seek': 288, 'start': 2.88, 'end': 30.88, 'text': ' I think my calls have been going past what they should be.', 'tokens': [50364, 286, 519, 452, 5498, 362, 668, 516, 1791, 437, 436, 820, 312, 13, 51764], 'temperature': 0.0, 'avg_logprob': -0.7447051405906677, 'compression_ratio': 0.90625, 'no_speech_prob': 0.02010437287390232}], 'language': 'english'}
 
-
+```
 
 ** To transcribe and translate the audio which is split based on the length of the turn. Make sure the length of each turn ```is longer than 0``` Before running the script for the short audio.
 
