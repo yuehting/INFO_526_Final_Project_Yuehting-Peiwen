@@ -40,8 +40,6 @@ In this project, we use this Whisper model to transcribe and translate English a
 ## Python usage
 To transcribe and translate the audio, we will use the following function to get the result. 
 
-### For the full interview:
-
 From [audio.py](https://github.com/openai/whisper/blob/main/whisper/audio.py):
 
 * The ```load_audio()``` method reads the audio file and returns a NumPy array containing the audio waveform, in float32 dtype. 
@@ -73,7 +71,7 @@ tensor([[-0.5296, -0.5296, -0.5296,  ...,  0.0462,  0.2417,  0.1118],
 ```
 
 ```
-** Before running the script for the short audio, make sure the length of the turn ``` is longer than 0. ```
+** To transcribe and translate the audio audio which split bases on its length of turn. Make sure the length of each turn ```is longer than 0 Before running the script for the short audio.
 
 
 
